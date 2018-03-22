@@ -67,5 +67,20 @@ namespace Employees
                 return (40 * Wage) + ((Hours - 40) * Wage * 1.5M);
             }
         }
+
+        public override void CalcGrossPay()
+        {
+
+        }
+
+        public override void CalcTax()
+        {
+
+        }
+
+        public override void CalcNetPay()
+        {
+
+        }
     }
 }

@@ -33,6 +33,21 @@ namespace Employees
             }
         }
 
+        public override void CalcGrossPay()
+        {
+
+        }
+
+        public override void CalcTax()
+        {
+
+        }
+
+        public override void CalcNetPay()
+        {
+
+        }
+
         // calculate earnings; override abstract method Earnings in Employee
         public override decimal Earnings() => WeeklySalary;
     }
