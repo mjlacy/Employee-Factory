@@ -121,6 +121,7 @@ namespace Employees
             Console.WriteLine("First: " + FirstName);
             Console.WriteLine("Last: " + LastName);
             Console.WriteLine("SSN: " + SocialSecurityNumber.Insert(5, "-").Insert(3, "-"));
+            Console.WriteLine("Account Type: " + GetType().ToString().Substring(10).Replace(GetType().ToString().Substring(GetType().ToString().Length -8), " Employee"));
             Console.WriteLine("Hours: " + hours);
             Console.WriteLine("Rate: " + rate);
             Console.WriteLine($"Gross: {gross:C}");
