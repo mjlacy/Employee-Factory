@@ -122,8 +122,11 @@ namespace Employees
             Console.WriteLine("Last: " + LastName);
             Console.WriteLine("SSN: " + SocialSecurityNumber.Insert(5, "-").Insert(3, "-"));
             Console.WriteLine("Account Type: " + GetType().ToString().Substring(10).Replace(GetType().ToString().Substring(GetType().ToString().Length -8), " Employee"));
-            Console.WriteLine("Hours: " + hours);
-            Console.WriteLine("Rate: " + rate);
+            if(GetType().ToString() == "Employees.HourlyEmployee")
+            {
+                Console.WriteLine("Hours: " + hours);
+                Console.WriteLine($"Rate: {rate:C}");
+            }
             Console.WriteLine($"Gross: {gross:C}");
             Console.WriteLine($"Net: {net:C}");
             Console.WriteLine("Net%: " + net_percent + "%");

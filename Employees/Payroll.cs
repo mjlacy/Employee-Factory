@@ -151,7 +151,7 @@ namespace Employees
             }
             else
             {
-                Console.WriteLine("\nSorry, all available employee slots are full\n");
+                Console.WriteLine("\nSorry, all available employee slots are full.\n");
                 Menu();
             }
         }
