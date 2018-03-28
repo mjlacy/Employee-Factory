@@ -2,42 +2,21 @@
 
 namespace Employees
 {
+    [Serializable]
     class HourlyEmployee : Employee
     {
-        private decimal wage; // wage per hour
-        private decimal hours; // hours worked for the week
-
         // five-parameter constructor
-        public HourlyEmployee(string firstName, string lastName,
-           string socialSecurityNumber, decimal hourlyWage,
-           decimal hoursWorked)
+        public HourlyEmployee(string firstName, string lastName, string socialSecurityNumber,
+           decimal hourlyWage,
+           int hoursWorked)
            : base(firstName, lastName, socialSecurityNumber)
         {
-            Wage = hourlyWage; // validate hourly wage 
+            rate = hourlyWage; // validate hourly wage 
             Hours = hoursWorked; // validate hours worked 
         }
 
-        // property that gets and sets hourly employee's wage
-        public decimal Wage
-        {
-            get
-            {
-                return wage;
-            }
-            set
-            {
-                if (value < 0) // validation
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value),
-                       value, $"{nameof(Wage)} must be >= 0");
-                }
-
-                wage = value;
-            }
-        }
-
         // property that gets and sets hourly employee's hours
-        public decimal Hours
+        public int Hours
         {
             get
             {
@@ -50,37 +29,20 @@ namespace Employees
                     throw new ArgumentOutOfRangeException(nameof(value),
                        value, $"{nameof(Hours)} must be >= 0 and <= 168");
                 }
-
                 hours = value;
             }
         }
 
-        // calculate earnings; override Employee’s abstract method Earnings
-        public override decimal Earnings()
+        public override float CalcGrossPay()
         {
             if (Hours <= 40) // no overtime                          
             {
-                return Wage * Hours;
+                return (float)(rate * Hours);
             }
             else
             {
-                return (40 * Wage) + ((Hours - 40) * Wage * 1.5M);
+                return (float)((40 * rate) + ((Hours - 40) * rate * 1.5M));
             }
-        }
-
-        public override void CalcGrossPay()
-        {
-
-        }
-
-        public override void CalcTax()
-        {
-
-        }
-
-        public override void CalcNetPay()
-        {
-
         }
     }
 }

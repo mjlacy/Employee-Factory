@@ -2,6 +2,7 @@
 
 namespace Employees
 {
+    [Serializable]
     class CommissionEmployee : Employee
     {
         private decimal grossSales; // gross weekly sales
@@ -31,7 +32,6 @@ namespace Employees
                     throw new ArgumentOutOfRangeException(nameof(value),
                        value, $"{nameof(GrossSales)} must be >= 0");
                 }
-
                 grossSales = value;
             }
         }
@@ -45,32 +45,19 @@ namespace Employees
             }
             set
             {
-                if (value <= 0 || value >= 1) // validation
+                if (value < 0) // validation
                 {
                     throw new ArgumentOutOfRangeException(nameof(value),
-                       value, $"{nameof(CommissionRate)} must be > 0 and < 1");
+                       value, $"{nameof(CommissionRate)} must be > 0");
                 }
-
                 commissionRate = value;
             }
         }
 
-        public override void CalcGrossPay()
+        public override float CalcGrossPay()
         {
-
+            //Gross commission is sales * rate all divided by 2 (or *1/2)
+            return (float) ((commissionRate * grossSales) / 2);
         }
-
-        public override void CalcTax()
-        {
-
-        }
-
-        public override void CalcNetPay()
-        {
-
-        }
-
-        // calculate earnings; override abstract method Earnings in Employee
-        public override decimal Earnings() => CommissionRate * GrossSales;
     }
 }
