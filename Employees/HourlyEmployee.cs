@@ -8,8 +8,8 @@ namespace Employees
         private decimal hours; // hours worked for the week
 
         // five-parameter constructor
-        public HourlyEmployee(string firstName, string lastName,
-           string socialSecurityNumber, decimal hourlyWage,
+        public HourlyEmployee(string firstName, string lastName, string socialSecurityNumber,
+           decimal hourlyWage,
            decimal hoursWorked)
            : base(firstName, lastName, socialSecurityNumber)
         {
@@ -55,32 +55,32 @@ namespace Employees
             }
         }
 
-        // calculate earnings; override Employee’s abstract method Earnings
-        public override decimal Earnings()
+        public override void CalcGrossPay()
         {
             if (Hours <= 40) // no overtime                          
             {
-                return Wage * Hours;
+                gross =  (float)(Wage * Hours);
             }
             else
             {
-                return (40 * Wage) + ((Hours - 40) * Wage * 1.5M);
+                gross = (float)((40 * Wage) + ((Hours - 40) * Wage * 1.5M));
             }
+
         }
 
-        public override void CalcGrossPay()
+        public override void displayEmployee()
         {
 
+            Console.WriteLine("First: " + FirstName);
+            Console.WriteLine("Last: " + LastName);
+            Console.WriteLine("SSN: " + SocialSecurityNumber);
+            Console.WriteLine("Type: Hourly");
+            Console.WriteLine("Hours: " + hours);
+            Console.WriteLine("Rate: " + rate);
+            Console.WriteLine("Gross: " + gross);
+            Console.WriteLine("Net: " + net);
+            Console.WriteLine("Net%: " + net_percent + "%");
         }
 
-        public override void CalcTax()
-        {
-
-        }
-
-        public override void CalcNetPay()
-        {
-
-        }
     }
 }

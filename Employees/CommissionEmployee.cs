@@ -45,10 +45,10 @@ namespace Employees
             }
             set
             {
-                if (value <= 0 || value >= 1) // validation
+                if (value < 0 ) // validation
                 {
                     throw new ArgumentOutOfRangeException(nameof(value),
-                       value, $"{nameof(CommissionRate)} must be > 0 and < 1");
+                       value, $"{nameof(CommissionRate)} must be > 0");
                 }
 
                 commissionRate = value;
@@ -57,20 +57,23 @@ namespace Employees
 
         public override void CalcGrossPay()
         {
-
+            //Gross commission is sales * rate all divided by 2 (or *1/2)
+            gross = (float)((commissionRate*grossSales)/2);
         }
 
-        public override void CalcTax()
+        public override void displayEmployee()
         {
 
+            Console.WriteLine("First: " + FirstName);
+            Console.WriteLine("Last: " + LastName);
+            Console.WriteLine("SSN: " + SocialSecurityNumber);
+            Console.WriteLine("Type: Commision");
+            Console.WriteLine("Unit Sales: " + grossSales);
+            Console.WriteLine("Unit Cost: " + commissionRate);
+            Console.WriteLine("Gross: " + gross);
+            Console.WriteLine("Net: " + net);
+            Console.WriteLine("Net%: " + net_percent + "%");
         }
 
-        public override void CalcNetPay()
-        {
-
-        }
-
-        // calculate earnings; override abstract method Earnings in Employee
-        public override decimal Earnings() => CommissionRate * GrossSales;
     }
 }

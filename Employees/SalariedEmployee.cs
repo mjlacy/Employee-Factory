@@ -4,51 +4,51 @@ namespace Employees
 {
     class SalariedEmployee : Employee
     {
-        private decimal weeklySalary;
+        private decimal grossSalary;
 
         // four-parameter constructor
         public SalariedEmployee(string firstName, string lastName,
-           string socialSecurityNumber, decimal weeklySalary)
+           string socialSecurityNumber, decimal grossSalary)
            : base(firstName, lastName, socialSecurityNumber)
         {
-            WeeklySalary = weeklySalary; // validate salary via property
+            GrossSalary = grossSalary; // validate salary via property
         }
 
         // property that gets and sets salaried employee's salary
-        public decimal WeeklySalary
+        public decimal GrossSalary
         {
             get
             {
-                return weeklySalary;
+                return grossSalary;
             }
             set
             {
                 if (value < 0) // validation
                 {
                     throw new ArgumentOutOfRangeException(nameof(value),
-                       value, $"{nameof(WeeklySalary)} must be >= 0");
+                       value, $"{nameof(GrossSalary)} must be >= 0");
                 }
 
-                weeklySalary = value;
+                grossSalary = value;
             }
         }
 
         public override void CalcGrossPay()
         {
-
+            gross = (float)GrossSalary;
+            
         }
-
-        public override void CalcTax()
+        public override void displayEmployee()
         {
 
+            Console.WriteLine("First: " + FirstName);
+            Console.WriteLine("Last: " + LastName);
+            Console.WriteLine("SSN: " + SocialSecurityNumber);
+            Console.WriteLine("Type: Salaried" );
+            Console.WriteLine("Gross: " + gross);
+            Console.WriteLine("Net: " + net);
+            Console.WriteLine("Net%: " + net_percent + "%");
         }
 
-        public override void CalcNetPay()
-        {
-
-        }
-
-        // calculate earnings; override abstract method Earnings in Employee
-        public override decimal Earnings() => WeeklySalary;
     }
 }
