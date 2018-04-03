@@ -30,8 +30,9 @@ namespace Employees
                 Console.WriteLine("| Press 1 To Load Employees          |");
                 Console.WriteLine("| Press 2 To Populate a new Employee |");
                 Console.WriteLine("| Press 3 To View an Employee        |");
-                Console.WriteLine("| Press 4 To Delete an Employee      |");
-                Console.WriteLine("| Press 5 To Save/Exit               |");
+                Console.WriteLine("| Press 4 To List all Employees      |");
+                Console.WriteLine("| Press 5 To Delete an Employee      |");
+                Console.WriteLine("| Press 6 To Save/Exit               |");
                 Console.WriteLine("|____________________________________|");
                 Console.WriteLine("|    Please Make Selection Now...    |");
                 Console.WriteLine("|====================================|");
@@ -55,19 +56,23 @@ namespace Employees
                 }
                 else if (input == "4")
                 {
-                    DeleteEmployee();
+                    ListEmployees();
                 }
                 else if (input == "5")
+                {
+                    DeleteEmployee();
+                }
+                else if (input == "6")
                 {
                     SaveEmployees();
                     Environment.Exit(0);
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input, please choose 1, 2, 3, 4, or 5");
+                    Console.WriteLine("Invalid input, please choose 1, 2, 3, 4, 5, 6");
                 }
                 Console.WriteLine();
-            } while (input != "5");
+            } while (input != "6");
         }
 
         void PopulateEmployee()
@@ -199,6 +204,24 @@ namespace Employees
             }
         }
 
+        void ListEmployees()
+        {
+            int count = 0;
+            for(int i = 0; i < myEmployees.Length; i++)
+            {
+                if(myEmployees[i] != null)
+                {
+                    Console.WriteLine($"Employee #{i + 1}: {myEmployees[i].FirstName} {myEmployees[i].LastName}");
+                    count++;
+                }
+            }
+
+            if(count == 0)
+            {
+                Console.WriteLine("No employees currently exist.");
+            }
+        }
+
         void DeleteEmployee()
         {
             Console.WriteLine("Please enter the employee number of the employee you want to delete. Press -1 to return to previous menu.");
@@ -207,7 +230,7 @@ namespace Employees
             {
                 if(myEmployees[choice - 1] != null)
                 {
-                    Console.WriteLine(myEmployees[choice - 1].FirstName + " " + myEmployees[choice - 1].LastName + " deleted successfully.");
+                    Console.WriteLine("\n" + myEmployees[choice - 1].FirstName + " " + myEmployees[choice - 1].LastName + " deleted successfully.");
                     myEmployees[choice - 1] = null;
                 }
                 else
@@ -240,7 +263,7 @@ namespace Employees
                 stream = new FileStream("SerializedEmployees.bin", FileMode.Create, FileAccess.Write, FileShare.None);
                 formatter.Serialize(stream, myEmployees);
 
-                //File Code
+                //File Code  //Saved at Employees/Employees/bin/Debug/Employees.txt
                 file = new StreamWriter("Employees.txt");
                 for(int i = 0; i < myEmployees.Length; i++)
                 {
