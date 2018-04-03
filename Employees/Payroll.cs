@@ -195,6 +195,7 @@ namespace Employees
                 catch (NullReferenceException ex)
                 {
                     Console.WriteLine("\nNo employee exists with that number.");
+                    Console.WriteLine(ex.ToString());
                 }
             }
             else
