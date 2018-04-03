@@ -7,7 +7,7 @@ namespace Employees
 {
     class Payroll
     {
-        static int numberOfEmployees = 3;
+        static readonly int numberOfEmployees = 4;
         private Employee[] myEmployees = new Employee[numberOfEmployees];
         private bool employeeTableLoaded = false; //bool to test if we have loaded the employee table
         private bool validChoice = false; //bool used to set if a choice is valid or not and then to allow to loop
@@ -30,7 +30,8 @@ namespace Employees
                 Console.WriteLine("| Press 1 To Load Employees          |");
                 Console.WriteLine("| Press 2 To Populate a new Employee |");
                 Console.WriteLine("| Press 3 To View an Employee        |");
-                Console.WriteLine("| Press 4 To Save/Exit               |");
+                Console.WriteLine("| Press 4 To Delete an Employee      |");
+                Console.WriteLine("| Press 5 To Save/Exit               |");
                 Console.WriteLine("|____________________________________|");
                 Console.WriteLine("|    Please Make Selection Now...    |");
                 Console.WriteLine("|====================================|");
@@ -54,15 +55,19 @@ namespace Employees
                 }
                 else if (input == "4")
                 {
+                    DeleteEmployee();
+                }
+                else if (input == "5")
+                {
                     SaveEmployees();
                     Environment.Exit(0);
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input, please choose 1, 2, 3, or 4");
+                    Console.WriteLine("Invalid input, please choose 1, 2, 3, 4, or 5");
                 }
                 Console.WriteLine();
-            } while (input != "4");
+            } while (input != "5");
         }
 
         void PopulateEmployee()
@@ -88,7 +93,7 @@ namespace Employees
                 Console.WriteLine("\nPlease Enter the Employee's Social Security Number");
                 String SocialSecurityNumber = Console.ReadLine();
 
-                Console.WriteLine("\nWhat type of employee is this, hourly(h), salary(s), or commission(c)? Please answer h/s/c");
+                Console.WriteLine("\nWhat type of employee is this, hourly(h), salary(s), commission(c) or base plus commission (b)? Please answer h/s/c/b");
                 String type = Console.ReadLine();
 
                 if (type.Equals("h", StringComparison.InvariantCultureIgnoreCase))
@@ -133,15 +138,30 @@ namespace Employees
                 }
                 else if (type.Equals("c", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    //this is a commisson employee
+                    //this is a commission employee
 
                     Console.WriteLine("\nPlease Enter the number of Units Sold:");
                     decimal grossSales = Convert.ToDecimal(Console.ReadLine());
 
                     Console.WriteLine("\nPlease enter the price per Unit:");
-                    decimal commissonRate = Convert.ToDecimal(Console.ReadLine());
+                    decimal commissionRate = Convert.ToDecimal(Console.ReadLine());
 
-                    myEmployees[index] = new CommissionEmployee(firstName, lastName, SocialSecurityNumber, grossSales, commissonRate);
+                    myEmployees[index] = new CommissionEmployee(firstName, lastName, SocialSecurityNumber, grossSales, commissionRate);
+                }
+                else if (type.Equals("b", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    //this is a base plus commission employee
+
+                    Console.WriteLine("\nPlease Enter the number of Units Sold:");
+                    decimal grossSales = Convert.ToDecimal(Console.ReadLine());
+
+                    Console.WriteLine("\nPlease enter the price per Unit:");
+                    decimal commissionRate = Convert.ToDecimal(Console.ReadLine());
+
+                    Console.WriteLine("\nPlease enter this employee's base salary:");
+                    decimal baseSalary = Convert.ToDecimal(Console.ReadLine());
+
+                    myEmployees[index] = new BasePlusCommissionEmployee(firstName, lastName, SocialSecurityNumber, grossSales, commissionRate, baseSalary);
                 }
                 else
                 {
@@ -160,7 +180,7 @@ namespace Employees
         {
             Console.WriteLine("Please enter the number of the employee you want to access");
             int choice = int.Parse(Console.ReadLine());
-            if (choice == 1 || choice == 2 || choice == 3)
+            if (choice == 1 || choice == 2 || choice == 3 || choice == 4)
             {
                 try
                 {
@@ -179,21 +199,90 @@ namespace Employees
             }
         }
 
+        void DeleteEmployee()
+        {
+            Console.WriteLine("Please enter the employee number of the employee you want to delete. Press -1 to return to previous menu.");
+            int choice = int.Parse(Console.ReadLine());
+            if (choice == 1 || choice == 2 || choice == 3 || choice == 4)
+            {
+                if(myEmployees[choice - 1] != null)
+                {
+                    Console.WriteLine(myEmployees[choice - 1].FirstName + " " + myEmployees[choice - 1].LastName + " deleted successfully.");
+                    myEmployees[choice - 1] = null;
+                }
+                else
+                {
+                    Console.WriteLine("\nNo employee exists with that employee number\n");
+                    DeleteEmployee();
+                }
+                
+            }
+            else if(choice == -1)
+            {
+                //Let method end without deleting
+            }
+            else
+            {
+                Console.WriteLine("\nInvalid Employee Number\n");
+                DeleteEmployee();
+            }
+
+        }
+
         void SaveEmployees()
         {
+            Stream stream = null;
+            StreamWriter file = null;
             try
             {
+                //Serialization Code
                 IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream("Employees.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+                stream = new FileStream("SerializedEmployees.bin", FileMode.Create, FileAccess.Write, FileShare.None);
                 formatter.Serialize(stream, myEmployees);
-                stream.Close();
+
+                //File Code
+                file = new StreamWriter("Employees.txt");
+                for(int i = 0; i < myEmployees.Length; i++)
+                {
+                    if(myEmployees[i] != null)
+                    {
+                        file.Write($"Employee #{i + 1}\r\n" +
+                            $"First Name: {myEmployees[i].FirstName}\r\n" +
+                            $"Last Name: {myEmployees[i].LastName}\r\n" +
+                            $"Social Security Number: {myEmployees[i].SocialSecurityNumber.Insert(5, "-").Insert(3, "-")}\r\n");
+
+                        if(myEmployees[i].GetType().ToString() == "Employees.HourlyEmployee")
+                        {
+                            file.Write($"Hours: {myEmployees[i].hours}\r\n" +
+                                $"Rate: {myEmployees[i].rate}\r\n");
+                        }
+
+                        file.Write($"Tax Rate: {myEmployees[i].taxrate}%\r\n" + 
+                            $"Gross: {myEmployees[i].gross:C}\r\n" +
+                            $"Tax: {myEmployees[i].tax:C}\r\n" +
+                            $"Net: {myEmployees[i].net:C}\r\n" +
+                            $"Net Percentage: {myEmployees[i].net_percent}%\r\n\r\n");
+                    }
+                }
             }
-            catch (SerializationException exc)
+            catch (Exception exc)
             {
                 Console.WriteLine();
                 Console.WriteLine("Error in SaveEmployees:");
                 Console.WriteLine(exc.Message);
                 Console.WriteLine(exc.StackTrace);
+            }
+            finally
+            {
+                if(stream != null)
+                {
+                    stream.Close();
+                }
+
+                if(file != null)
+                {
+                    file.Close();
+                }
             }
         }
 
@@ -201,15 +290,17 @@ namespace Employees
         {
             if (!employeeTableLoaded)
             {
+                Stream stream = null;
                 try
                 {
-                    if (File.Exists("Employees.bin"))
+                    if (File.Exists("SerializedEmployees.bin"))
                     {
                         IFormatter formatter = new BinaryFormatter();
-                        Stream stream = new FileStream("Employees.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
+                        stream = new FileStream("SerializedEmployees.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
                         myEmployees = (Employee[])formatter.Deserialize(stream);
                         stream.Close();
                         employeeTableLoaded = true;
+                        Console.WriteLine("Employees loaded successfully.");
                     }
                     else
                     {
@@ -218,9 +309,16 @@ namespace Employees
                 }
                 catch (Exception exc)
                 {
-                    Console.WriteLine("\nError in LoadAccounts:");
+                    Console.WriteLine("\nError in LoadEmployees:");
                     Console.WriteLine(exc.Message);
                     Console.WriteLine(exc.StackTrace);
+                }
+                finally
+                {
+                    if (stream != null)
+                    {
+                        stream.Close();
+                    }
                 }
             }
             else

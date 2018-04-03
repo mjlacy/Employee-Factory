@@ -127,6 +127,7 @@ namespace Employees
                 Console.WriteLine("Hours: " + hours);
                 Console.WriteLine($"Rate: {rate:C}");
             }
+            Console.WriteLine($"Tax Rate: {taxrate}%");
             Console.WriteLine($"Gross: {gross:C}");
             Console.WriteLine($"Net: {net:C}");
             Console.WriteLine("Net%: " + net_percent + "%");
