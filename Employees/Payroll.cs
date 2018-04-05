@@ -95,7 +95,7 @@ namespace Employees
                 Console.WriteLine("\nPlease Enter the Employee's Last Name");
                 String lastName = Console.ReadLine();
 
-                Console.WriteLine("\nPlease Enter the Employee's Social Security Number");
+                Console.WriteLine("\nPlease Enter the Employee's Social Security Number (9 digits,numbers only, no dashes)");
                 String SocialSecurityNumber = Console.ReadLine();
 
                 Console.WriteLine("\nWhat type of employee is this, hourly(h), salary(s), commission(c) or base plus commission (b)? Please answer h/s/c/b");

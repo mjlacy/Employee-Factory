@@ -120,6 +120,7 @@ namespace Employees
              return (net / gross) * 100;
         }
 
+
         public void DisplayEmployee()
         {
             Console.WriteLine("First: " + FirstName);
