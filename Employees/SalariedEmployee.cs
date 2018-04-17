@@ -33,9 +33,9 @@ namespace Employees
             }
         }
 
-        public override float CalcGrossPay()
+        public override decimal CalcGrossPay()
         {
-            return (float) GrossSalary;
+            return GrossSalary;
         }
     }
 }

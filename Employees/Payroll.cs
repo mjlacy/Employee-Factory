@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -190,12 +191,10 @@ namespace Employees
                 try
                 {
                     myEmployees[choice - 1].Menu();
-                    SaveEmployees();
                 }
                 catch (NullReferenceException ex)
                 {
                     Console.WriteLine("\nNo employee exists with that number.");
-                    Console.WriteLine(ex.ToString());
                 }
             }
             else
@@ -259,51 +258,68 @@ namespace Employees
             StreamWriter file = null;
             try
             {
-                //Serialization Code
-                IFormatter formatter = new BinaryFormatter();
-                stream = new FileStream("SerializedEmployees.bin", FileMode.Create, FileAccess.Write, FileShare.None);
-                formatter.Serialize(stream, myEmployees);
-
-                //File Code  //Saved at Employees/Employees/bin/Debug/Employees.txt
+                //Human Readable File Code  //Saved at Employees/Employees/bin/Debug/Employees.txt
                 file = new StreamWriter("Employees.txt");
-                for(int i = 0; i < myEmployees.Length; i++)
+                for (int i = 0; i < myEmployees.Length; i++)
                 {
-                    if(myEmployees[i] != null)
+                    if (myEmployees[i] != null)
                     {
                         file.Write($"Employee #{i + 1}\r\n" +
                             $"First Name: {myEmployees[i].FirstName}\r\n" +
                             $"Last Name: {myEmployees[i].LastName}\r\n" +
                             $"Social Security Number: {myEmployees[i].SocialSecurityNumber.Insert(5, "-").Insert(3, "-")}\r\n");
 
-                        if(myEmployees[i].GetType().ToString() == "Employees.HourlyEmployee")
+                        if (myEmployees[i].GetType().ToString() == "Employees.HourlyEmployee")
                         {
-                            file.Write($"Hours: {myEmployees[i].hours}\r\n" +
-                                $"Rate: {myEmployees[i].rate}\r\n");
+                            file.Write($"Hours: {myEmployees[i].Hours}\r\n" +
+                                $"Rate: {myEmployees[i].Rate}\r\n");
                         }
 
-                        file.Write($"Tax Rate: {myEmployees[i].taxrate}%\r\n" + 
-                            $"Gross: {myEmployees[i].gross:C}\r\n" +
-                            $"Tax: {myEmployees[i].tax:C}\r\n" +
-                            $"Net: {myEmployees[i].net:C}\r\n" +
-                            $"Net Percentage: {myEmployees[i].net_percent}%\r\n\r\n");
+                        file.Write($"Tax Rate: {myEmployees[i].TaxRate * 100}%\r\n" +
+                            $"Gross: {myEmployees[i].Gross:C}\r\n" +
+                            $"Tax: {myEmployees[i].Tax:C}\r\n" +
+                            $"Net: {myEmployees[i].Net:C}\r\n" +
+                            $"Net Percentage: {myEmployees[i].NetPercent}%\r\n\r\n");
                     }
                 }
+
+                Console.WriteLine("Please enter the encryption password. (Must be at least 8 characters)");
+                string password = Console.ReadLine();
+
+                foreach (var employee in myEmployees) //Encrypt strings
+                {
+                    if (employee != null)
+                    {
+                        foreach (PropertyInfo prop in employee.GetType().GetProperties())
+                        {
+                            string type = (Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType).ToString();
+                            if (type == "System.String") //Can't set a non-string variable to an encrypted string
+                            {
+                                prop.SetValue(employee, Encryption.EncryptWithPassword(prop.GetValue(employee, null).ToString(), password));
+                            }
+                        }
+                    }
+                }
+
+                //Serialization Code
+                IFormatter formatter = new BinaryFormatter();
+                stream = new FileStream("SerializedEmployees.bin", FileMode.Create, FileAccess.Write, FileShare.None);
+                formatter.Serialize(stream, myEmployees);
             }
             catch (Exception exc)
             {
                 Console.WriteLine();
                 Console.WriteLine("Error in SaveEmployees:");
                 Console.WriteLine(exc.Message);
-                Console.WriteLine(exc.StackTrace);
             }
             finally
             {
-                if(stream != null)
+                if (stream != null)
                 {
                     stream.Close();
                 }
 
-                if(file != null)
+                if (file != null)
                 {
                     file.Close();
                 }
@@ -319,12 +335,47 @@ namespace Employees
                 {
                     if (File.Exists("SerializedEmployees.bin"))
                     {
+                        Console.WriteLine("Please enter the encryption password. (Must be at least 8 characters)");
+                        string password = Console.ReadLine();
                         IFormatter formatter = new BinaryFormatter();
                         stream = new FileStream("SerializedEmployees.bin", FileMode.Open, FileAccess.Read, FileShare.Read);
                         myEmployees = (Employee[])formatter.Deserialize(stream);
                         stream.Close();
+
+                        foreach (var employee in myEmployees) //Decrypt strings
+                        {
+                            if (employee != null)
+                            {
+                                foreach (PropertyInfo prop in employee.GetType().GetProperties())
+                                {
+                                    string type = (Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType).ToString();
+                                    if (type == "System.String")
+                                    {
+                                        prop.SetValue(employee, Encryption.DecryptWithPassword(prop.GetValue(employee, null).ToString(), password));
+                                    }
+                                }
+                            }
+                        }
+
+                        for (int i = 0; i < myEmployees.Length; i++) //Ensure password entered is correct
+                        {                           
+                            if (i < (myEmployees.Length - 1) && (myEmployees[i] == null || (myEmployees[i] != null && myEmployees[i].FirstName == null)))
+                            {
+                                continue;
+                            }
+                            else if (myEmployees[i] == null || (myEmployees[i] != null && myEmployees[i].FirstName == null))
+                            {
+                                Console.WriteLine("Invalid encrypton password given.");
+                                LoadEmployees();
+                                return;
+                            }
+                            else if(myEmployees[i] != null && myEmployees[i].FirstName != null)
+                            {
+                                break;
+                            }
+                        }
                         employeeTableLoaded = true;
-                        Console.WriteLine("Employees loaded successfully.");
+                        Console.WriteLine("\nEmployees loaded successfully.");
                     }
                     else
                     {
@@ -335,7 +386,6 @@ namespace Employees
                 {
                     Console.WriteLine("\nError in LoadEmployees:");
                     Console.WriteLine(exc.Message);
-                    Console.WriteLine(exc.StackTrace);
                 }
                 finally
                 {

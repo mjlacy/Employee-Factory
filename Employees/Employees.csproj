@@ -45,6 +45,7 @@
     <Compile Include="BasePlusCommissionEmployee.cs" />
     <Compile Include="CommissionEmployee.cs" />
     <Compile Include="Employee.cs" />
+    <Compile Include="Encryption.cs" />
     <Compile Include="Payroll.cs" />
     <Compile Include="HourlyEmployee.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -54,10 +54,10 @@ namespace Employees
             }
         }
 
-        public override float CalcGrossPay()
+        public override decimal CalcGrossPay()
         {
             //Gross commission is sales * rate all divided by 2 (or *1/2)
-            return (float) ((commissionRate * grossSales) / 2);
+            return (commissionRate * grossSales) / 2;
         }
     }
 }
