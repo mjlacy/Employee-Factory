@@ -91,7 +91,7 @@ namespace Employees
         {
             //User Error Checks
             if (string.IsNullOrWhiteSpace(password) || password.Length < MinPasswordLength)
-                throw new ArgumentException(String.Format("Must have a password of at least {0} characters!", MinPasswordLength), "password");
+                throw new ArgumentException(String.Format("Must have a password of at least {0} characters!", MinPasswordLength));
 
             if (encryptedMessage == null || encryptedMessage.Length == 0)
                 throw new ArgumentException("Encrypted Message Required!", "encryptedMessage");

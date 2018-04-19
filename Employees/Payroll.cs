@@ -110,7 +110,16 @@ namespace Employees
                     Console.WriteLine("\nPlease Enter rate, (ex for $20 an hour enter 20):");
                     decimal hourlyWage = Convert.ToDecimal(Console.ReadLine());
 
-                    myEmployees[index] = new HourlyEmployee(firstName, lastName, SocialSecurityNumber, hourlyWage, hoursWorked);
+                    try
+                    {
+                        myEmployees[index] = new HourlyEmployee(firstName, lastName, SocialSecurityNumber, hourlyWage, hoursWorked);
+                    }
+                    catch (ArgumentOutOfRangeException ex)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine("\nEmployee creation failed.");
+                    }
                 }
                 else if (type.Equals("s", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -152,7 +161,16 @@ namespace Employees
                     Console.WriteLine("\nPlease enter the price per Unit:");
                     decimal commissionRate = Convert.ToDecimal(Console.ReadLine());
 
-                    myEmployees[index] = new CommissionEmployee(firstName, lastName, SocialSecurityNumber, grossSales, commissionRate);
+                    try
+                    {
+                        myEmployees[index] = new CommissionEmployee(firstName, lastName, SocialSecurityNumber, grossSales, commissionRate);
+                    }
+                    catch (ArgumentOutOfRangeException ex)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine("\nEmployee creation failed.");
+                    }
                 }
                 else if (type.Equals("b", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -167,7 +185,16 @@ namespace Employees
                     Console.WriteLine("\nPlease enter this employee's base salary:");
                     decimal baseSalary = Convert.ToDecimal(Console.ReadLine());
 
-                    myEmployees[index] = new BasePlusCommissionEmployee(firstName, lastName, SocialSecurityNumber, grossSales, commissionRate, baseSalary);
+                    try
+                    {
+                        myEmployees[index] = new BasePlusCommissionEmployee(firstName, lastName, SocialSecurityNumber, grossSales, commissionRate, baseSalary);
+                    }
+                    catch (ArgumentOutOfRangeException ex)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine("\nEmployee creation failed.");
+                    }
                 }
                 else
                 {
