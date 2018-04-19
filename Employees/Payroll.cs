@@ -32,8 +32,9 @@ namespace Employees
                 Console.WriteLine("| Press 2 To Populate a new Employee |");
                 Console.WriteLine("| Press 3 To View an Employee        |");
                 Console.WriteLine("| Press 4 To List all Employees      |");
-                Console.WriteLine("| Press 5 To Delete an Employee      |");
-                Console.WriteLine("| Press 6 To Save/Exit               |");
+                Console.WriteLine("| Press 5 To Edit an Employee        |");
+                Console.WriteLine("| Press 6 To Delete an Employee      |");
+                Console.WriteLine("| Press 7 To Save/Exit               |");
                 Console.WriteLine("|____________________________________|");
                 Console.WriteLine("|    Please Make Selection Now...    |");
                 Console.WriteLine("|====================================|");
@@ -61,27 +62,30 @@ namespace Employees
                 }
                 else if (input == "5")
                 {
-                    DeleteEmployee();
+                    EditEmployee();
                 }
                 else if (input == "6")
+                {
+                    DeleteEmployee();
+                }
+                else if (input == "7")
                 {
                     SaveEmployees();
                     Environment.Exit(0);
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input, please choose 1, 2, 3, 4, 5, 6");
+                    Console.WriteLine("Invalid input, please choose 1, 2, 3, 4, 5, 6, or 7");
                 }
                 Console.WriteLine();
-            } while (input != "6");
+            } while (input != "7");
         }
 
-        void PopulateEmployee()
+        void PopulateEmployee(int index = -99)
         {
-            int index = -99;
             for (int i = 0; i < myEmployees.Length; i++)
             {
-                if (myEmployees[i] == null)
+                if (myEmployees[i] == null && index == -99)
                 {
                     index = i;
                     break;
@@ -246,6 +250,20 @@ namespace Employees
             if(count == 0)
             {
                 Console.WriteLine("No employees currently exist.");
+            }
+        }
+
+        void EditEmployee()
+        {
+            Console.WriteLine("Which employee number would you like to edit?");
+            int choice = int.Parse(Console.ReadLine());
+            if(choice <= myEmployees.Length && choice >= 1)
+            {
+                PopulateEmployee(choice -1);
+            }
+            else
+            {
+                Console.WriteLine("\nInvalid employee number");
             }
         }
 
